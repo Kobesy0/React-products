@@ -1,34 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+
+import { useState } from 'react';
+import ProductCard from './components/ProductCard'
+import Modal from './components/UI/Modal'
+import { productList } from './data'
+import Button from './components/UI/Button'
 
 function App() {
-  const [count, setCount] = useState(0)
+  // State 
+  const [isOpen, setIsOpen] = useState(false);
 
+  // Handler 
+  function closeModal() {
+    setIsOpen(false);
+  }
+  // Render 
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  const renderProductList = productList.map(prodcut => <ProductCard key={prodcut.id} product={prodcut}/>)
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <main className='container'>
+      <Button className={`bg-indigo-600`} width="w-fit" onClick={openModal}>Add Modal</Button>
+
+      <Modal isOpen={isOpen} closeModal={closeModal} title='Add A New Product'>
+
+       <div className='flex items-center space-x-3'>
+        <Button className={`bg-indigo-500 hover:bg-indigo-600`}>submit</Button>
+        <Button className={`bg-gray-500 hover:bg-gray-600`}>cancel</Button>
+       </div>
+      </Modal>
+      <div className=' m-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 rounded-md'>
+      {renderProductList}
+     </div>
+    </main>
   )
 }
 
