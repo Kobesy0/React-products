@@ -1,4 +1,4 @@
-import { IProduct } from "../interfaces/interface";
+import { IFormInput, IProduct } from "../interfaces/interface";
 import { v4 as uuid } from 'uuid';
 
 export const productList: IProduct[] = [
@@ -86,5 +86,32 @@ export const productList: IProduct[] = [
             name: "Cars",
            imageURL : "https://optim.tildacdn.net/tild6666-3964-4837-b736-333931393161/-/resize/824x/-/format/webp/AI_10_year_car_exter.png",
         }
+    },
+]
+
+export const formInputsList :IFormInput[] = [
+    {
+        id: "title",
+        name: "title",
+        label:"Product title",
+        type: "text",
+    },
+    {
+        id: "description",
+        name: "description",
+        label:"Product Description",
+        type: "text",
+    },
+    {
+        id: "image",
+        name: "image",
+        label:"Product ImageURL",
+        type: "text",
+    },
+    {
+        id: "price",
+        name: "price",
+        label:"Product Price",
+        type: "text",
     },
 ]
