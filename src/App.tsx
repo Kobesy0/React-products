@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import ProductCard from './components/ProductCard'
 import Modal from './components/UI/Modal'
 import { formInputsList , productList } from './data'
@@ -9,16 +9,30 @@ import Input from './components/UI/Input'
 function App() {
   // State 
   const [isOpen, setIsOpen] = useState(false);
-
+  const [product , serProduct] = useState({
+    title: "",
+    description: "",
+    price: "",
+    imageURL: "",
+  });
   // Handler 
   function closeModal() {
     setIsOpen(false);
   }
+
+  const onChangeHandler =(event: ChangeEvent<HTMLInputElement>) =>{
+    const {name , value} = event.target
+    serProduct({
+      ...product,
+      [name]: value,
+    })
+  }
+  console.log(product)
   // Render 
   function openModal() {
     setIsOpen(true);
   }
-
+  console.log(product)
   //Make map on array of product to render the products 
   const renderProductList = productList.map(product => <ProductCard key={product.id} product={product}/>)
 
@@ -26,7 +40,7 @@ function App() {
   const renderInputList = formInputsList.map(input => 
   <div className='flex flex-col'>
     <label htmlFor={input.id}>{input.label}</label>
-    <Input id={input.id} name={input.name} />
+    <Input id={input.id} name={input.name} value={product[input.name]} onChange={onChangeHandler}/>
   </div>
   )
 
@@ -37,7 +51,7 @@ function App() {
 
       <div className=' m-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 rounded-md'>
       {renderProductList}
-     </div>
+      </div>
       <Modal isOpen={isOpen} closeModal={closeModal} title='Add A New Product'>
         <form className='space-y-2 '>
           {renderInputList}
