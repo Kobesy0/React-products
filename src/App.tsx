@@ -8,6 +8,10 @@ import { IProduct } from "./interfaces/interface";
 import { productValidation } from "./validation/productValidation";
 import ErrorMsg from "./components/ui/ErrorMsg";
 import CircleColor from "./components/ui/CircleColor";
+import { v4 as uuid } from 'uuid';
+
+
+
 
 function App() {
   const defaultProductOJC = {
@@ -34,6 +38,7 @@ function App() {
 });
 console.log(tempColor)
 
+  const [products, setProducts] = useState<IProduct[]>(productList);
   const [product, setProduct] = useState<IProduct>(defaultProductOJC);
   // Handler
   function closeModal() {
@@ -87,15 +92,21 @@ console.log(tempColor)
       setErrors(errors)
       return;
     }
-    console.log("Send the product to the server");
-    closeModal()
+    
+    
+    // setProducts([product , ...products]);
+    setProducts(prev => [{...product , id: uuid() , colors: tempColor} , ...prev]);
+    // setProducts(products.concat(product));
     setProduct(defaultProductOJC);
+    setTempColor([])
+    closeModal()
+
   };
 
-
+  console.log(products)
 
   //Make map on array of product to render the products
-  const renderProductList = productList.map((product) => (
+  const renderProductList = products.map((product) => (
     <ProductCard key={product.id} product={product} />
   ));
 
@@ -128,9 +139,14 @@ console.log(tempColor)
       return;
     }
     setTempColor(prev => prev.concat(color));
-  }}/>)
+  
+  }}
+/>)
 
-  const renderChosenColors = tempColor.map(color => <span key={color} className="rounded-md text-xs px-1" style={{background:color}}>{color}</span>)
+
+
+
+  const renderChosenColors = tempColor.map(color => <span key={color} className="rounded-md text-xs px-1 text-white" style={{background:color}}>{color}</span>)
 
   return (
     <main className="container">
