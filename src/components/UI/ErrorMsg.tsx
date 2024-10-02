@@ -2,9 +2,9 @@ interface IProps{
     msg: string
 }
 
-function ErrorMsg({msg}:IProps){
+function ErrorMsg({msg, ...rest}:IProps){
     return(
-       msg ?  <span className="text-red-600 block font-semibold text-sm "> {msg}</span> :null
+       msg ? <span className="text-red-600 block font-semibold text-sm " {...rest}> {msg}</span> :null
     )
 }
 
