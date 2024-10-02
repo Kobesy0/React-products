@@ -12,6 +12,8 @@ import { v4 as uuid } from "uuid";
 import SelectMenu from "./components/ui/SelectMenu";
 import { ProductNameTypes } from "./types";
 
+import toast, { Toaster } from 'react-hot-toast';
+
 function App() {
   const ProductDefault = {
     title: "",
@@ -29,13 +31,14 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
 
   const [isOpenEditModal, setIsOpenEditModal,] = useState(false);
+  const [isOpenRemoveModal, setIsOpenRemoveModal,] = useState(false);
   
   const [products, setProducts] = useState<IProduct[]>(productList);
   const [product, setProduct] = useState<IProduct>(ProductDefault);
   
   const [productToEdit, setProductToEdit] = useState<IProduct>(ProductDefault);
   const [productToEditIndex, setProductToEditIndex] = useState<number>(0);
-  console.log(productToEditIndex)
+
 
   const [tempColor, setTempColor] = useState<string[]>([]);
 
@@ -55,6 +58,10 @@ function App() {
   // -------------------------------------------------
   const closeEditModal = () => {setIsOpenEditModal(false);};
   const openEditModal = () => {setIsOpenEditModal(true);};
+  
+  const closeRemoveModal = () => {setIsOpenRemoveModal(false);};
+  const openRemoveModal = () => {setIsOpenRemoveModal(true);};
+  
 
   const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -80,8 +87,13 @@ function App() {
       ...errors,
       [name]: "",
     });
+
+   
   };
 // -----------------------------------------
+ 
+
+
   const clearErrors = () => {
     setErrors({
       title: "",
@@ -96,7 +108,17 @@ function App() {
     setProduct(ProductDefault);
     clearErrors()
     closeEditModal()
+    closeRemoveModal()
   };
+
+
+  const removeProductHandler =()=>{
+    const filtered = products.filter(product => product.id !== productToEdit.id)
+    setProducts(filtered)
+    console.log(products)
+    closeRemoveModal()
+    toast("Product removed successfully ", {icon:"✔",duration: 2000, style:{backgroundColor:"black", fontSize:"16px", color:"white"}})
+  }
 
   // MAKE SUBMIT HANDLER
   const submitHandler = (event: FormEvent<HTMLFormElement>): void => {
@@ -128,6 +150,7 @@ function App() {
 
     setTempColor([]);
     closeModal();
+    toast("Product added successfully ", {icon:"✔",duration: 2000, style:{backgroundColor:"black", fontSize:"16px", color:"white"}})
   };
 
   // End SUBMIT HANDLER
@@ -161,6 +184,7 @@ function App() {
     setProductToEdit(ProductDefault);
     setTempColor([]);
     closeEditModal();
+    toast("product modified successfully", {icon:"✔",duration: 2000, style:{backgroundColor:"black", fontSize:"18px", color:"white"}})
   };
   
   // End SUBMIT Edit HANDLER
@@ -176,6 +200,7 @@ function App() {
     openEditModal={openEditModal}
     setProductToEditIndex={setProductToEditIndex}
     index={index}
+    openRemoveModal={openRemoveModal}
     />
   ));
 
@@ -230,6 +255,7 @@ function App() {
     />
   ));
 
+
   const renderChosenColors = tempColor.map((color) => (
     <span
       key={color}
@@ -260,18 +286,10 @@ function App() {
       <Button
         className={`bg-indigo-600 flex justify-center mx-auto items-center `}
         width="w-fit"
-        onClick={openModal}
-      >
-        Add Modal
-      </Button>
+        onClick={openModal}>Add Modal</Button>
 
       {/* This is all the products  */}
-      <div
-        className=" m-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 
-      gap-2 rounded-md"
-      >
-        {renderProductList}
-      </div>
+      <div className=" m-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 rounded-md">{renderProductList}</div>
 
       {/* Add Product Modal  */}
       <Modal isOpen={isOpen} closeModal={closeModal} title="Add A New Product">
@@ -303,16 +321,12 @@ function App() {
       {/* Edit product modal  */} 
       <Modal isOpen={isOpenEditModal} closeModal={closeEditModal} title="Edit Product">
         <form className="space-y-2" onSubmit={OnEditSubmit}>
-
-
         {renderProductEditWithErrorMsg("title" , "Product Title" , "title")}
         {renderProductEditWithErrorMsg("description" , "Product Description" , "description")}
         {renderProductEditWithErrorMsg("imageURL" , "Product imageURL" , "imageURL")}
         {renderProductEditWithErrorMsg("price" , "Product Price" , "price")}
-
         
         <SelectMenu selected={productToEdit.category} setSelected={(value) => setProductToEdit({...productToEdit, category: value})}/>
-        
         
         {tempColor.concat( productToEdit.colors).map((color) => (
           
@@ -325,10 +339,9 @@ function App() {
             {color}
           </span>
         ))
-       }
+      }
         <div className="flex gap-1  my-6 flex-wrap">{renderColorsList}</div>
-
-          <div className="space-x-3 flex items-center">
+        <div className="space-x-3 flex items-center">
             <Button className="bg-indigo-600 hover:bg-indigo-800">
               Submit
             </Button>
@@ -341,6 +354,24 @@ function App() {
           </div>
         </form>
       </Modal>
+
+      {/* Remove the product  */}
+      <Modal isOpen={isOpenRemoveModal} closeModal={closeRemoveModal} title="Remove Product" description="Are you sure you want to remove this product">
+
+        <div className="space-x-3 flex items-center">
+            <Button className="bg-red-600 hover:bg-red-700" onClick={removeProductHandler}>
+              Yes, Remove
+            </Button>
+            <Button
+              className="bg-gray-400 hover:bg-gray-600"
+              onClick={onCancel}
+            >
+              Cancel
+            </Button>
+          </div>
+      </Modal>
+
+      <Toaster/>
     </main>
   );
 }

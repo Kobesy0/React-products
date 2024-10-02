@@ -11,8 +11,9 @@ interface IProps {
   openEditModal: ()=> void;
   index: number;
   setProductToEditIndex: (index: number) => void
+  openRemoveModal: ()=> void;
 }
-function ProductCard({ product, setProductToEdit , openEditModal , index,setProductToEditIndex}: IProps) {
+function ProductCard({ product, setProductToEdit , openEditModal , index,setProductToEditIndex, openRemoveModal}: IProps) {
   const { description, imageURL, price, colors ,title, category } = product;
 
   const onEdit = () => {
@@ -20,7 +21,11 @@ function ProductCard({ product, setProductToEdit , openEditModal , index,setProd
     setProductToEditIndex(index);
     openEditModal();
   };
-  
+  const onRemove =()=>{
+    setProductToEdit(product);
+    openRemoveModal()
+    console.log("onRemove")
+  }
     // Make map on the color to render them 
   const renderColorsList = colors.map(color => <CircleColor key={color} color={color} />)
   return (
@@ -46,7 +51,7 @@ function ProductCard({ product, setProductToEdit , openEditModal , index,setProd
       </div>
       <div className="flex items-center  text-white space-x-1 mt-5">
         <Button className="bg-indigo-500 hover:bg-indigo-700" onClick={onEdit}>Edit</Button>
-        <Button className="bg-red-600 hover:bg-red-700 ">Delete</Button>
+        <Button className="bg-red-600 hover:bg-red-700" onClick={onRemove}>Delete</Button>
       </div>
     </div>
   );
